@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stopwatch App</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            text-align: center;
+            background-color: #ecf0f1;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+        h1 {
+            color: #333;
+        }
+        #stopwatch {
+            font-size: 3em;
+            margin-bottom: 20px;
+            color: #333;
+        }
+        #controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 1em;
+            cursor: pointer;
+            background-color: #3498db;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        button:disabled {
+            background-color: #95a5a6;
+            cursor: not-allowed;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        #laps {
+            font-size: 1.2em;
+            text-align: left;
+            max-width: 400px;
+            margin: 0 auto;
+            color: #333;
+        }
+        #laps div {
+            background-color: #ecf0f1;
+            padding: 10px;
+            margin-bottom: 5px;
+            border-radius: 5px;
+        }
+    </style>
+    </style>
+</head>
+<body>
+    <h1>Stylish Stopwatch App</h1>
+
+    <div id="stopwatch">0:00</div>
+
+    <div id="controls">
+        <button id="startBtn" onclick="startStopwatch()">Start</button>
+        <button id="stopBtn" onclick="stopStopwatch()" disabled>Stop</button>
+        <button id="resetBtn" onclick="resetStopwatch()">Reset</button>
+        <button id="lapBtn" onclick="recordLap()" disabled>Lap</button>
+    </div>
+
+    <div id="laps"></div>
+
+    <script>
+        let stopwatchInterval;
+        let elapsedTime = 0;
+        let lapStartTime;
+        let isRunning = false;
+
+        function startStopwatch() {
+            if (!isRunning) {
+                stopwatchInterval = setInterval(updateStopwatch, 1000);
+                lapStartTime = Date.now() - elapsedTime * 1000;
+                document.getElementById('startBtn').disabled = true;
+                document.getElementById('stopBtn').disabled = false;
+                document.getElementById('lapBtn').disabled = false;
+                isRunning = true;
+            }
+        }
+
+        function stopStopwatch() {
+            if (isRunning) {
+                clearInterval(stopwatchInterval);
+                document.getElementById('startBtn').disabled = false;
+                document.getElementById('stopBtn').disabled = true;
+                document.getElementById('lapBtn').disabled = true;
+                isRunning = false;
+            }
+        }
+
+        function resetStopwatch() {
+            clearInterval(stopwatchInterval);
+            elapsedTime = 0;
+            lapStartTime = 0;
+            updateStopwatch();
+            document.getElementById('startBtn').disabled = false;
+            document.getElementById('stopBtn').disabled = true;
+            document.getElementById('lapBtn').disabled = true;
+            isRunning = false;
+            document.getElementById('laps').innerHTML = '';
+        }
+
+        function updateStopwatch() {
+            const currentTime = Math.floor((Date.now() - lapStartTime) / 1000);
+            const minutes = Math.floor(currentTime / 60);
+            const seconds = currentTime % 60;
+            document.getElementById('stopwatch').textContent = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+        }
+
+        function recordLap() {
+            if (isRunning) {
+                const lapTime = Math.floor((Date.now() - lapStartTime) / 1000);
+                const minutes = Math.floor(lapTime / 60);
+                const seconds = lapTime % 60;
+                const lapNumber = document.getElementById('laps').childElementCount + 1;
+
+                const lapItem = document.createElement('div');
+                lapItem.textContent = `Lap ${lapNumber}: ${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+                document.getElementById('laps').prepend(lapItem);
+
+                lapStartTime = Date.now();
+            }
+        }
+    </script>
+</body>
+</html>
