@@ -2,10 +2,6 @@
 
 A simple and stylish stopwatch app with lap functionality.
 
-## Live Demo
-
-Check out the live demo [here](https://jude752.github.io/stop-watch/).
-
 ## Features
 
 - Start, stop, and reset the stopwatch.
